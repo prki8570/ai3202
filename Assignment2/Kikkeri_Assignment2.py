@@ -1,5 +1,12 @@
-import sys
 import math
+import sys
+
+
+#Pradyumna Kikkeri 101417122
+#CSCI 3202 Hoenigman
+#Fall 2015
+#Due Friday, September 18, 2015, 4:00 PM
+
 
 class Node(object): #spec'd per Prof. Hoenigmann's outline in the PDF
 
@@ -20,15 +27,15 @@ class Node(object): #spec'd per Prof. Hoenigmann's outline in the PDF
 		distance_from_parent = abs(parentNode.i - self. i) + abs(parentNode.j - self.j)
 		if(distance_from_parent == 2): # diagonal
 			self.distanceToStart = parentNode.distanceToStart + 14
-		elif(distance_from_parent == 1): # horizontal
+		elif(distance_from_parent == 1): # horizontal/vertical
 			self.distanceToStart = parentNode.distanceToStart + 10
 # algorithms from http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
 		if (v == 1):
 			self.distanceToStart += 10
 		if (heuristic_choice == 'MNH'):
-			self.heuristic = abs(9 - self.i) + abs(7 - self.j)
+			self.heuristic = abs(9 - self.i) + abs(7 - self.j) # Manhattan
 		else:
-			self.heuristic = (abs(9 - self.j*10) + abs(7-self.i*10)) ** 2
+			self.heuristic = (abs(9 - self.j*10) + abs(7-self.i*10)) ** 2 #Manhattan Squared
 		self.f = self.distanceToStart + self.heuristic
 
 	def cmp(self, tParent, v):
