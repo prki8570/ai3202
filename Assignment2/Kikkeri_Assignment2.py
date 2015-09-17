@@ -72,23 +72,23 @@ def A_star_search(mat, heuristic):
 				if(x_value >= 0 and x_value <= 9 and y_value >= 0 and y_value <= 7):
 					iterator += 1
 					new = Node(x_value, y_value)
-					boot = True
+					ot = True
 					for b in cl:
 						if b.eq(new):
-							boot = False
+							ot = False
 
 
-					if(mat[x_value][7-y_value] is not 2 and boot):
+					if(mat[x_value][7-y_value] is not 2 and ot):
 
 						newn = Node(x_value, y_value)
-						boo = True
+						br = True
 						for u in queue_open:
 							if u.eq(newn):
-								boo = False
+								br = False
 
 
 
-						if boo:
+						if br:
 							queue_open.append(new)
 							new.heuristicSetup(op, mat[x_value][7-y_value], heuristic)
 						else:
