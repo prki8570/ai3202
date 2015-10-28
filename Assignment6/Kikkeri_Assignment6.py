@@ -90,7 +90,7 @@ class BayesNet(object):
 			marg= cancer_marg* node.probDist["T"] + (1 - cancer_marg)* node.probDist["F"]
 			return marg
 
-	def conditional(self, node1, node2):
+	def conditional(self, node1, node2, node3=None):
 		if node1.name == node2.name:
 			return 1.0
 		elif node1.name is 'P' and node2.name is 'S':
@@ -113,7 +113,25 @@ class BayesNet(object):
 			temp1 = .9 * self.marginal(self.data[2])
 			temp2 = temp1 + (.2 * (1 - temp1))
 			return temp1/temp2
-		#elif node1.name is 'P' and node2.name is 'C':
+		elif node1.name is 'P' and node2.name is 'C':
+			top = self.conditional(self.data[2], self.data[0])
+			temp1 = .05 * node2.parent[1].prior
+			temp2 = .02 * (1 - node2.parent[1].prior)
+			tempadded = temp1+temp2
+			bottom = (self.conditional(self.data[2], self.data[0]) * node1.prior) + (tempadded * (1-node1.prior))
+			return top/bottom
+		'''elif node1.name is 'P' and node2.name is 'D':
+			top = self.conditional(self.data[4], self.data[0])
+			smokerProb = node2.parent.parent[1].prior
+			temp1 = .65 * ((smokerProb * .05) + ((1-smokerProb) * .02))
+			temp2 = .3 * ((smokerProb * .95) + ((1-smokerProb
+				) * .98))
+			tempadded = temp1+temp2
+			bottom = (self.conditional(self.data[4], self.data[0] * ))'''
+
+
+	'''def jointProb(self, node1, node2, node3=None):
+		return self.conditional(self.findNode(node1), self.findNode(node2)) * node2.'''
 
 
 	###################################
@@ -171,7 +189,7 @@ def getoptParser(opts, args):
 
 BN = BayesNet()
 BN.NetInit()
-print BN.conditional(BN.findNode('C'),BN.findNode('X'))
+print BN.conditional(BN.findNode('P'),BN.findNode('C'))
 #print BN.c_with_s(BN.findNode('C'), BN.findNode('P'), BN.findNode('S'))
 	
 try:
