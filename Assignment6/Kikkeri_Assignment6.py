@@ -59,6 +59,13 @@ class BayesNet(object):
 		D.probDist= {"T": 0.65, "F": 0.30}
 		self.data= [P,S,C,X,D]
 
+	def findNode(self, name):
+		for node in self.data:
+			if node.name is name:
+				return node
+		#failed to find the name
+		print "Node non-existent."	
+
 	# Calculation of marginal probability works.
 	def marginal(self, node):
 		if node.name is 'P':
@@ -79,27 +86,49 @@ class BayesNet(object):
 			cancer_marg2 = node.parent[0].parent[1].prior * node.parent[0].probDist["low"]["T"]+ (1- node.parent[0].parent[1].prior)*node.parent[0].probDist["low"]["F"]
 			cancer_marg2 *= node.parent[0].parent[0].prior
 			cancer_marg = cancer_marg1 + cancer_marg2
-			#Now have cancer's marginal
+			# At this point, marginal of cancer is here
 			marg= cancer_marg* node.probDist["T"] + (1 - cancer_marg)* node.probDist["F"]
 			return marg
 
-	def findNode(name):
-		for node in self.data:
-			if node.name is name:
-				return node
-		#failed to find the name
-		print "Node non-existent."
-	
+	def conditional(self, node1, node2):
+		if node1.name == node2.name:
+			return 1.0
+		elif node1.name is 'P' and node2.name is 'S':
+			return node1.prior
+		elif node1.name is 'S' and node2.name is 'P':
+			return node1.prior
+		elif node1.name is 'C' and node2.name is 'S':
+			temp1 = .03 * node1.parent[0].prior
+			temp2 = .05 * (1-node1.parent[0].prior)
+			return temp1 + temp2
+		elif node1.name is 'C' and node2.name is 'P':
+			temp1 = .03 * node1.parent[1].prior
+			temp2 = .001 * (1 - node1.parent[1].prior)
+			return temp1 + temp2
+		elif node1.name is 'C' and node2.name is 'D':
+			temp1 = .65 * self.marginal(self.data[2])
+			temp2 = (temp1 + (.3 * (1 - temp1)))
+			return temp1/temp2
+		elif node1.name is 'C' and node2.name is 'X':
+			temp1 = .9 * self.marginal(self.data[2])
+			temp2 = temp1 + (.2 * (1 - temp1))
+			return temp1/temp2
+		#elif node1.name is 'P' and node2.name is 'C':
+
+
+	###################################
 	
 		
 
 	# Adjust the prior of P or S and set it to newPrior
-	def adjPrior(self, rv, newPrior):
+	def adjPrior(rv, newPrior):
 		if rv.name is not 'P' or 'S':
 			return
 		else:
 			rv.prior= newPrior
 			print "New prior is now", newPrior
+
+
 
 
 # Parser based on Prof. Hoenigman's	
@@ -110,9 +139,9 @@ def getoptParser(opts, args):
 			print "flag", o
 			print "args", a
 			print a[0]
-			print float(a[1:])
+			print (a[1:])
 			#setting the prior here works if the Bayes net is already built
-			#print BN.adjPrior(a[0], float(a[1:]))
+			print BN.adjPrior(BN.findNode(a[0]), (a[1:]))
 		elif o in ("-m"):
 			print "flag", o
 			print "args", a
@@ -142,6 +171,8 @@ def getoptParser(opts, args):
 
 BN = BayesNet()
 BN.NetInit()
+print BN.conditional(BN.findNode('C'),BN.findNode('X'))
+#print BN.c_with_s(BN.findNode('C'), BN.findNode('P'), BN.findNode('S'))
 	
 try:
 	opts, args = getopt.getopt(sys.argv[1:], 'g:j:m:p:')
