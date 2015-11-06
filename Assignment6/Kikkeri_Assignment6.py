@@ -189,7 +189,13 @@ def getoptParser(opts, args):
 
 BN = BayesNet()
 BN.NetInit()
-print BN.conditional(BN.findNode('P'),BN.findNode('C'))
+print 'P given S is', BN.conditional(BN.findNode('P'),BN.findNode('S'))
+print 'S given P is', BN.conditional(BN.findNode('S'),BN.findNode('P'))
+print 'C given S is', BN.conditional(BN.findNode('C'),BN.findNode('S'))
+print 'C given P is', BN.conditional(BN.findNode('C'),BN.findNode('P'))
+print 'C given D is', BN.conditional(BN.findNode('C'),BN.findNode('D'))
+print 'C given X is', BN.conditional(BN.findNode('C'),BN.findNode('X'))
+print 'P given C is', BN.conditional(BN.findNode('P'),BN.findNode('C'))
 #print BN.c_with_s(BN.findNode('C'), BN.findNode('P'), BN.findNode('S'))
 	
 try:
